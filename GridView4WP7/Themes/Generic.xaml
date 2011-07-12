@@ -1,0 +1,119 @@
+﻿<!--
+  Copyright © Alexander G. Bykin, Russia 2011
+  This source is subject to the Microsoft Public License (Ms-PL).
+  Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
+  All other rights reserved.
+-->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:GridView4WP7"
+    >
+
+    <Style TargetType="local:GridView">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:GridView">
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                        <Grid x:Name="RootElement">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0" x:Name="HeadersElement">
+                                <Grid.ColumnDefinitions>
+                                </Grid.ColumnDefinitions>
+                            </Grid>
+                            <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                                <ItemsControl x:Name="ItemsElement">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <local:GridViewRowPresenter />
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </Grid>
+                    </ScrollViewer>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="local:GridViewRowPresenter">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:GridViewRowPresenter">
+                    <Grid x:Name="RootElement">
+                        <Grid.ColumnDefinitions>
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="local:GridViewHeader">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:GridViewHeader">
+                    <Grid x:Name="RootElement">
+                        <Grid.Background>
+                            <SolidColorBrush Color="DimGray"/>
+                        </Grid.Background>
+                        <ContentPresenter
+                            Content="{TemplateBinding Content}"
+                            VerticalAlignment="Center"
+                            />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="local:GridViewCell">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:GridViewCell">
+                    <Grid x:Name="RootElement" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="SelectionStates">
+                                <VisualState x:Name="SelectedState">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00" Storyboard.TargetName="RootElement" Storyboard.TargetProperty="(Panel.Background)">
+                                            <DiscreteObjectKeyFrame KeyTime="00:00:00">
+                                                <DiscreteObjectKeyFrame.Value>
+                                                    <SolidColorBrush>
+                                                        <SolidColorBrush.Color>CornflowerBlue</SolidColorBrush.Color>
+                                                    </SolidColorBrush>
+                                                </DiscreteObjectKeyFrame.Value>
+                                            </DiscreteObjectKeyFrame>
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="UnselectedState">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00" Storyboard.TargetName="RootElement" Storyboard.TargetProperty="(Panel.Background)">
+                                            <DiscreteObjectKeyFrame KeyTime="00:00:00">
+                                                <DiscreteObjectKeyFrame.Value>
+                                                    <SolidColorBrush>
+                                                        <SolidColorBrush.Color>DarkGray</SolidColorBrush.Color>
+                                                    </SolidColorBrush>
+                                                </DiscreteObjectKeyFrame.Value>
+                                            </DiscreteObjectKeyFrame>
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <ContentPresenter
+                            Content="{TemplateBinding Content}"
+                            VerticalAlignment="Center"
+                            />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>
