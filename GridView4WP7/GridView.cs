@@ -13,6 +13,7 @@ namespace GridView4WP7
     using System.Windows.Controls;
     using GridView4WP7.Helpers;
     using System;
+    using System.Windows.Data;
 
     public class GridView : Control
     {
@@ -260,8 +261,13 @@ namespace GridView4WP7
         {
             if (this.isControlsInitialized)
             {
-                this.itemsElement.SetBinding(ItemsControl.ItemsSourceProperty, new System.Windows.Data.Binding("ItemsSource") { Source = this });
-                this.UpdateColumnsSize();
+                BindingExpression be = this.itemsElement.GetBindingExpression(ItemsControl.ItemsSourceProperty);
+
+                if (be == null || be.DataItem == null)
+                {
+                    this.itemsElement.SetBinding(ItemsControl.ItemsSourceProperty, new System.Windows.Data.Binding("ItemsSource") { Source = this });
+                    this.UpdateColumnsSize();
+                }
             }
         }
 
