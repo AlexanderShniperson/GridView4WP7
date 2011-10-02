@@ -1,41 +1,34 @@
-﻿/*
-  Copyright © Alexander G. Bykin, Russia 2011
-  This source is subject to the Microsoft Public License (Ms-PL).
-  Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
-  All other rights reserved.
-*/
+﻿// (c) Copyright Alexander G. Bykin, Russia 2011
+// This source is subject to the Microsoft Public License (Ms-PL).
+// Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
+// All other rights reserved.
 
-namespace GridView4WP7
+namespace System.Windows.Controls
 {
     using System.Windows;
 
-    public class GridViewTemplatedColumn : IGridViewColumn
+    /// <summary>
+    /// Represents Templated type of Column
+    /// </summary>
+    public class GridViewTemplatedColumn : GridViewColumnBase
     {
         #region Public Properties
 
-        public object Header { get; set; }
-
-        public double Width { get; set; }
-
+        /// <summary>
+        /// Gets or sets Template of column
+        /// </summary>
         public DataTemplate Template { get; set; }
 
         #endregion
 
-        #region Public Properties
+        #region Public Methods
 
         /// <summary>
         /// Generate content for cell by column binding
         /// </summary>
-        /// <returns>ContentPresenter</returns>
-        public FrameworkElement GetGeneratedContent()
+        /// <returns>ContentPresenter control</returns>
+        internal override FrameworkElement GetGeneratedContent()
         {
-            //ContentPresenter result = new ContentPresenter() { DataContext = dataContext };
-
-            //result.SetValue(ContentPresenter.ContentTemplateProperty, this.Template);
-
-            //if (this.Template != null)
-            //    result.Content = this.Template.LoadContent();
-
             return (this.Template == null) ? null : (FrameworkElement)this.Template.LoadContent();
         }
 

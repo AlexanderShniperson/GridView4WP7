@@ -5,17 +5,19 @@
 
 namespace System.Windows.Controls
 {
+    using System.Windows;
+    using System.Windows.Controls;
+
     /// <summary>
-    /// Represents Header control
+    /// Represents collection of GridView columns
     /// </summary>
-    public sealed class GridViewHeader : ContentControl
+    public class GridViewColumnCollection : DependencyObjectCollection<GridViewColumnBase>
     {
         /// <summary>
-        /// Initializes a new instance of the GridViewHeader class.
+        /// Initializes a new instance of the GridViewColumnCollection class.
         /// </summary>
-        public GridViewHeader()
+        public GridViewColumnCollection()
         {
-            DefaultStyleKey = typeof(GridViewHeader);
         }
     }
 }

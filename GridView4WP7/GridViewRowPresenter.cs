@@ -1,17 +1,16 @@
-﻿/*
-  Copyright © Alexander G. Bykin, Russia 2011
-  This source is subject to the Microsoft Public License (Ms-PL).
-  Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
-  All other rights reserved.
-*/
+﻿// (c) Copyright Alexander G. Bykin, Russia 2011
+// This source is subject to the Microsoft Public License (Ms-PL).
+// Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
+// All other rights reserved.
 
-namespace GridView4WP7
+namespace System.Windows.Controls
 {
     using System.Windows;
-    using System.Windows.Controls;
-    using GridView4WP7.Helpers;
     using System.Windows.Data;
 
+    /// <summary>
+    /// Represents Row presenter control that contains Cell controls
+    /// </summary>
     public sealed class GridViewRowPresenter : Control
     {
         #region Constants
@@ -22,6 +21,9 @@ namespace GridView4WP7
 
         #region Public Properties
 
+        /// <summary>
+        /// Gets or sets a value indicating whether selected state of row
+        /// </summary>
         public bool IsSelected
         {
             get { return (bool)GetValue(IsSelectedProperty); }
@@ -32,6 +34,9 @@ namespace GridView4WP7
 
         #region Private properties
 
+        /// <summary>
+        /// Represents a RootElement of control
+        /// </summary>
         private Grid rootElement;
 
         #endregion
@@ -48,29 +53,42 @@ namespace GridView4WP7
 
         #region Constructors
 
+        /// <summary>
+        /// Initializes a new instance of the GridViewRowPresenter class.
+        /// </summary>
         public GridViewRowPresenter()
         {
             DefaultStyleKey = typeof(GridViewRowPresenter);
         }
 
+        /// <summary>
+        /// Indicates when control is loaded
+        /// </summary>
         public override void OnApplyTemplate()
         {
             if (this.rootElement == null)
             {
                 this.rootElement = this.GetTemplateChild(ROWPRESENTER_ROOTELEMENT) as Grid;
-                this.rootElement.MouseLeftButtonDown += OnRootElementMouseLeftButtonDown;
+                this.rootElement.MouseLeftButtonDown += this.OnRootElementMouseLeftButtonDown;
                 this.GenerateFields();
             }
 
             base.OnApplyTemplate();
         }
 
+        /// <summary>
+        /// Indicates Row clicked by user
+        /// </summary>
+        /// <param name="sender">GridViewRowPresenter control</param>
+        /// <param name="e">MouseButtonEventArgs arguments</param>
         private void OnRootElementMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             GridView gridView = TreeHelper.FindVisualParent<GridView>(this);
 
             if (gridView == null)
+            {
                 return;
+            }
 
             gridView.SelectedItem = this.DataContext;
         }
@@ -88,10 +106,14 @@ namespace GridView4WP7
             GridView gridView = TreeHelper.FindVisualParent<GridView>(this);
 
             if (gridView == null)
+            {
                 return;
+            }
 
             if (gridView.Columns == null || gridView.Columns.Count == 0)
+            {
                 return;
+            }
 
             this.Margin = new Thickness(0, gridView.RowSpacing, 0, 0);
 
@@ -108,7 +130,7 @@ namespace GridView4WP7
                     if (columnWidth > 0)
                     {
                         this.rootElement.ColumnDefinitions[i].SetValue(ColumnDefinition.WidthProperty, new GridLength(columnWidth));
-                        lastCell.Width = columnWidth;
+                        //// lastCell.Width = columnWidth;
                         gridView.ResizeColumn(i, columnWidth);
                     }
 

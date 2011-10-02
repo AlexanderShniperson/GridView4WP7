@@ -4,3 +4,5 @@ Obj
 obj
 Binaries
 *.suo
+*.user
+*.cache

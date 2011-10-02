@@ -6,16 +6,12 @@
 namespace System.Windows.Controls
 {
     /// <summary>
-    /// Represents Header control
+    /// Represents VisualStates of control
     /// </summary>
-    public sealed class GridViewHeader : ContentControl
+    internal static class VisualStates
     {
-        /// <summary>
-        /// Initializes a new instance of the GridViewHeader class.
-        /// </summary>
-        public GridViewHeader()
-        {
-            DefaultStyleKey = typeof(GridViewHeader);
-        }
+        public const string GroupSelectionStates = "SelectionStates";
+        public const string SelectedState = "SelectedState";
+        public const string UnselectedState = "UnselectedState";
     }
 }

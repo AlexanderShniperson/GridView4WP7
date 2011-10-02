@@ -1,36 +1,32 @@
-﻿/*
-  Copyright © Alexander G. Bykin, Russia 2011
-  This source is subject to the Microsoft Public License (Ms-PL).
-  Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
-  All other rights reserved.
-*/
+﻿// (c) Copyright Alexander G. Bykin, Russia 2011
+// This source is subject to the Microsoft Public License (Ms-PL).
+// Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
+// All other rights reserved.
 
-namespace GridView4WP7
+namespace System.Windows.Controls
 {
-    using System.Collections;
-    using System.Collections.ObjectModel;
-    using System.Windows;
-    using System.Windows.Controls;
-    using GridView4WP7.Helpers;
     using System;
+    using System.Collections;
+    using System.Windows;
     using System.Windows.Data;
 
+    /// <summary>
+    /// GridView control for Windows Phone 7
+    /// </summary>
     public class GridView : Control
     {
         #region Constants
 
-        private const string GRIDVIEW_ROOTELEMENT = "RootElement";
-
-        private const string GRIDVIEW_ITEMSELEMENT = "ItemsElement";
-
-        private const string GRIDVIEW_HEADERSELEMENT = "HeadersElement";
+        internal const string GRIDVIEW_ROOTELEMENT = "RootElement";
+        internal const string GRIDVIEW_ITEMSELEMENT = "ItemsElement";
+        internal const string GRIDVIEW_HEADERSELEMENT = "HeadersElement";
 
         #endregion
 
         #region Public Properties
 
         /// <summary>
-        /// Indicates spacing between cells
+        /// Gets or sets spacing between cells
         /// </summary>
         public double CellSpacing
         {
@@ -39,7 +35,7 @@ namespace GridView4WP7
         }
 
         /// <summary>
-        /// Indicates spacing between rows
+        /// Gets or sets spacing between rows
         /// </summary>
         public double RowSpacing
         {
@@ -48,7 +44,7 @@ namespace GridView4WP7
         }
 
         /// <summary>
-        /// Indicates items for show at the GridView
+        /// Gets or sets items for show at the GridView
         /// </summary>
         public IEnumerable ItemsSource
         {
@@ -57,22 +53,86 @@ namespace GridView4WP7
         }
 
         /// <summary>
-        /// Indicates columns that must be show at GridView
+        /// Gets or sets columns that must be show at GridView
         /// </summary>
-        public ObservableCollection<IGridViewColumn> Columns
+        public GridViewColumnCollection Columns
         {
-            get { return (ObservableCollection<IGridViewColumn>)GetValue(ColumnsProperty); }
+            get { return (GridViewColumnCollection)GetValue(ColumnsProperty); }
             set { SetValue(ColumnsProperty, value); }
         }
 
         /// <summary>
-        /// Indicates Selected item in GridView
+        /// Gets or sets Selected item in GridView
         /// </summary>
         public object SelectedItem
         {
             get { return (object)GetValue(SelectedItemProperty); }
             set { SetValue(SelectedItemProperty, value); }
         }
+
+        /// <summary>
+        /// Gets or sets CellTemplate of RowPresenter
+        /// </summary>
+        public DataTemplate CellTemplate
+        {
+            get { return (DataTemplate)GetValue(CellTemplateProperty); }
+            set { SetValue(CellTemplateProperty, value); }
+        }
+
+        /// <summary>
+        /// Gets or sets HeaderTemplate of GridView
+        /// </summary>
+        public DataTemplate HeaderTemplate
+        {
+            get { return (DataTemplate)GetValue(HeaderTemplateProperty); }
+            set { SetValue(HeaderTemplateProperty, value); }
+        }
+
+        #endregion
+
+        #region Dependency Properties
+
+        public static readonly DependencyProperty RowSpacingProperty = DependencyProperty.Register(
+            "RowSpacing",
+            typeof(double),
+            typeof(GridView),
+            new PropertyMetadata(2d));
+
+        public static readonly DependencyProperty CellSpacingProperty = DependencyProperty.Register(
+            "CellSpacing",
+            typeof(double),
+            typeof(GridView),
+            new PropertyMetadata(2d));
+
+        public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register(
+            "ItemsSource",
+            typeof(IEnumerable),
+            typeof(GridView),
+            new PropertyMetadata(OnItemsSourcePropertyChanged));
+
+        public static readonly DependencyProperty ColumnsProperty = DependencyProperty.Register(
+            "Columns",
+            typeof(GridViewColumnCollection),
+            typeof(GridView),
+            new PropertyMetadata(new GridViewColumnCollection()));
+
+        public static readonly DependencyProperty SelectedItemProperty = DependencyProperty.Register(
+            "SelectedItem",
+            typeof(object),
+            typeof(GridView),
+            new PropertyMetadata(null, OnSelectedItemPropertyChanged));
+
+        public static readonly DependencyProperty CellTemplateProperty = DependencyProperty.Register(
+            "CellTemplate",
+            typeof(DataTemplate),
+            typeof(GridView),
+            new PropertyMetadata(OnCellTemplatePropertyChanged));
+
+        public static readonly DependencyProperty HeaderTemplateProperty = DependencyProperty.Register(
+            "HeaderTemplate",
+            typeof(DataTemplate),
+            typeof(GridView),
+            new PropertyMetadata(OnHeaderTemplatePropertyChanged));
 
         #endregion
 
@@ -100,54 +160,29 @@ namespace GridView4WP7
 
         #endregion
 
-        #region Dependency Properties
-
-        public static readonly DependencyProperty RowSpacingProperty = DependencyProperty.Register(
-            "RowSpacing",
-            typeof(double),
-            typeof(GridView),
-            new PropertyMetadata(2d));
-
-        public static readonly DependencyProperty CellSpacingProperty = DependencyProperty.Register(
-            "CellSpacing",
-            typeof(double),
-            typeof(GridView),
-            new PropertyMetadata(2d));
-
-        public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register(
-            "ItemsSource",
-            typeof(IEnumerable),
-            typeof(GridView),
-            new PropertyMetadata(OnItemsSourcePropertyChanged));
-
-        public static readonly DependencyProperty ColumnsProperty = DependencyProperty.Register(
-            "Columns",
-            typeof(ObservableCollection<IGridViewColumn>),
-            typeof(GridView),
-            new PropertyMetadata(new ObservableCollection<IGridViewColumn>()));
-
-        public static readonly DependencyProperty SelectedItemProperty = DependencyProperty.Register(
-            "SelectedItem",
-            typeof(object),
-            typeof(GridView),
-            new PropertyMetadata(null, OnSelectedItemPropertyChanged));
-
-        #endregion
-
         #region Events
 
+        /// <summary>
+        /// Gets or sets SelectedItem event
+        /// </summary>
         public event EventHandler<EventArgs> SelectedItemChanged;
 
         #endregion
 
         #region Constructors
 
+        /// <summary>
+        /// Initializes a new instance of the GridView class.
+        /// </summary>
         public GridView()
         {
             DefaultStyleKey = typeof(GridView);
             this.isControlsInitialized = false;
         }
 
+        /// <summary>
+        /// Indicates when control is loaded
+        /// </summary>
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
@@ -162,33 +197,39 @@ namespace GridView4WP7
         #region Private Methods
 
         /// <summary>
-        /// 
+        /// ItemsSource property changed handler.
         /// </summary>
-        /// <param name="d"></param>
-        /// <param name="e"></param>
+        /// <param name="d">GridView control</param>
+        /// <param name="e">IEnumerable items source</param>
         private static void OnItemsSourcePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
         }
 
         /// <summary>
-        /// 
+        /// SelectedItem property changed handler.
         /// </summary>
-        /// <param name="d"></param>
-        /// <param name="e"></param>
+        /// <param name="d">GridView control</param>
+        /// <param name="e">Selected item of ItemsSource</param>
         private static void OnSelectedItemPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             GridView control = d as GridView;
 
             if (control == null || !control.isControlsInitialized)
+            {
                 return;
+            }
 
             if (e.NewValue == null)
+            {
                 return;
+            }
 
             GridViewRowPresenter newSelectionRow = TreeHelper.FindChild<GridViewRowPresenter>(control.itemsElement.ItemContainerGenerator.ContainerFromItem(e.NewValue));
 
             if (newSelectionRow == null)
+            {
                 return;
+            }
 
             if (e.OldValue == null)
             {
@@ -197,14 +238,18 @@ namespace GridView4WP7
             else if (e.OldValue.GetType() == e.NewValue.GetType())
             {
                 if (e.NewValue == e.OldValue)
+                {
                     return;
+                }
 
                 GridViewRowPresenter selectedRow = TreeHelper.FindChild<GridViewRowPresenter>(control.itemsElement.ItemContainerGenerator.ContainerFromItem(e.OldValue));
 
                 newSelectionRow.IsSelected = true;
 
                 if (selectedRow == null)
+                {
                     return;
+                }
 
                 selectedRow.IsSelected = false;
             }
@@ -213,16 +258,35 @@ namespace GridView4WP7
             {
                 control.SelectedItemChanged(control, EventArgs.Empty);
             }
-
         }
 
         /// <summary>
-        /// Initialize controls
+        /// CellTemplate property changed handler.
+        /// </summary>
+        /// <param name="d">GridView control</param>
+        /// <param name="e">DataTemplate for CellTemplate</param>
+        private static void OnCellTemplatePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+        }
+
+        /// <summary>
+        /// HeaderTemplate property changed handler.
+        /// </summary>
+        /// <param name="d">GridView control</param>
+        /// <param name="e">DataTemplate for HeaderTemplate</param>
+        private static void OnHeaderTemplatePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+        }
+
+        /// <summary>
+        /// Initialization of controls.
         /// </summary>
         private void InitializeControls()
         {
             if (this.isControlsInitialized)
+            {
                 return;
+            }
 
             bool fail = false;
 
@@ -242,11 +306,13 @@ namespace GridView4WP7
             }
 
             if (this.rootElement == null || this.headersElement == null || this.itemsElement == null)
+            {
                 fail = true;
+            }
             else
             {
-                this.LayoutUpdated -= OnGridViewLayoutUpdated;
-                this.LayoutUpdated += OnGridViewLayoutUpdated;
+                this.LayoutUpdated -= this.OnGridViewLayoutUpdated;
+                this.LayoutUpdated += this.OnGridViewLayoutUpdated;
             }
 
             this.isControlsInitialized = !fail;
@@ -255,8 +321,8 @@ namespace GridView4WP7
         /// <summary>
         /// Indicates GridView loaded or updated
         /// </summary>
-        /// <param name="sender">GridView</param>
-        /// <param name="e">EventArgs</param>
+        /// <param name="sender">GridView control</param>
+        /// <param name="e">EventArgs arguments</param>
         private void OnGridViewLayoutUpdated(object sender, System.EventArgs e)
         {
             if (this.isControlsInitialized)
@@ -277,12 +343,16 @@ namespace GridView4WP7
         private void CreateHeaders()
         {
             if (this.Columns == null)
+            {
                 return;
+            }
 
             int columnCount = this.Columns.Count;
 
             if (columnCount == 0)
+            {
                 return;
+            }
 
             this.RemoveHeaders();
 
@@ -316,7 +386,6 @@ namespace GridView4WP7
             this.headersElement.ColumnDefinitions.Clear();
         }
 
-
         #endregion
 
         #region Public Methods
@@ -324,37 +393,25 @@ namespace GridView4WP7
         /// <summary>
         /// Update column width
         /// </summary>
+        /// <param name="columnIndex">Indicates what Column to resize</param>
+        /// <param name="width">Indicates width of Column</param>
         public void ResizeColumn(int columnIndex, double width)
         {
-            //int itemsAmount = this.itemsElement.Items.Count - 1;
             int headerColumnAmount = this.headersElement.ColumnDefinitions.Count - 1;
 
             if (columnIndex > headerColumnAmount || width == 0)
+            {
                 return;
+            }
 
             try
             {
                 this.headersElement.ColumnDefinitions[columnIndex].SetValue(ColumnDefinition.WidthProperty, new GridLength(width));
                 this.headersElement.Children[columnIndex].SetValue(GridViewHeader.WidthProperty, width);
-
-                /*for (int i = 0; i <= itemsAmount; i++)
-                {
-                    DependencyObject itemTopContainer = this.itemsElement.ItemContainerGenerator.ContainerFromIndex(i);
-                    Grid itemContainer = Helpers.TreeHelper.FindChild<Grid>(itemTopContainer);
-
-                    for (int j = 0; j < itemContainer.ColumnDefinitions.Count; j++)
-                    {
-                        if (j > headerColumnAmount)
-                            break;
-
-                        double itemContainerColumnWidth = itemContainer.ColumnDefinitions[j].ActualWidth;
-
-                        if (this.headersElement.ColumnDefinitions[j].Width.Value < itemContainerColumnWidth)
-                            this.headersElement.ColumnDefinitions[j].SetValue(ColumnDefinition.WidthProperty, new GridLength(itemContainerColumnWidth));
-                    }
-                }*/
             }
-            catch { }
+            catch
+            {
+            }
         }
 
         /// <summary>
@@ -372,26 +429,36 @@ namespace GridView4WP7
                     DependencyObject itemTopContainer = this.itemsElement.ItemContainerGenerator.ContainerFromIndex(i);
 
                     if (itemTopContainer == null)
+                    {
                         continue;
+                    }
 
-                    Grid itemContainer = Helpers.TreeHelper.FindChild<Grid>(itemTopContainer);
+                    Grid itemContainer = TreeHelper.FindChild<Grid>(itemTopContainer);
 
                     if (itemContainer == null)
+                    {
                         continue;
+                    }
 
                     for (int j = 0; j < itemContainer.ColumnDefinitions.Count; j++)
                     {
                         if (j > headerColumnAmount)
+                        {
                             break;
+                        }
 
                         double itemContainerColumnWidth = itemContainer.ColumnDefinitions[j].ActualWidth;
 
                         if (this.headersElement.ColumnDefinitions[j].Width.Value < itemContainerColumnWidth)
+                        {
                             this.headersElement.ColumnDefinitions[j].SetValue(ColumnDefinition.WidthProperty, new GridLength(itemContainerColumnWidth));
+                        }
                     }
                 }
             }
-            catch { }
+            catch
+            {
+            }
         }
 
         #endregion
